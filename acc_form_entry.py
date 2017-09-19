@@ -8,7 +8,8 @@ import logging as lg
 auto_gen_warning = "This form has been filled out automatically and is still in testing!\nDO NOT SUBMIT"
 
 def make_test_patient():
-    return PatientEntry('Shylah', 'Adams', '03/06/2007', '', 'YD57518', '13/09/2017', '12BCJW', ['13/09/2017', 'DY1', '68.68'], ['13/09/2017', 'DX1', '26.37'], ['13/09/2017', 'DX4', '10.41']) 
+    return PatientEntry('Shylah', 'Adams', '03/06/2007', '', 'YD57518', '13/09/2017', '12BCJW',
+	['13/09/2017', 'DY1', '68.68'], ['13/09/2017', 'DX1', '26.37'], ['13/09/2017', 'DX4', '10.41']) 
 
 
 def chrome_setup():
@@ -21,25 +22,21 @@ def chrome_setup():
 
 
 def css_click(chrome, selector, *formatting):
-    chrome.find_element_by_css_selector(css_selectors[selector].format(*formatting).click()
+    """Wrapper that finds an element by css selector and clicks on it, with optional formatting"""
+    chrome.find_element_by_css_selector(css_selectors[selector].format(*formatting)).click()
 
 
 def css_enter(chrome, selector, entry, *formatting):
+    """Wrapper that finds an element by css selector and enters given text, with optional formatting"""
     chrome.find_element_by_css_selector(css_selectors[selector].format(*formatting)).send_keys(entry)
 
 
 def enter_data(patient, chrome):
     """Fills in fields of claim form with attributes of instance of PatientEntry class"""    
     css_click(chrome, 'create_invoice')
-    
-    #css_enter(chrome, 'vendor_id',       patient.vendor_id)
-    #css_enter(chrome, 'contract_number', patient.contract_number)
-    #css_enter(chrome, 'first_name',      patient.first_name)
-    #css_enter(chrome, 'last_name',       patient.last_name)
-    #css_enter(chrome, 'date_birth',      patient.birth_date)
-    #css_enter(chrome, 'NHI',             patient.NHI)
-    #css_enter(chrome, 'claim_number',    patient.accident_number)
-    #css_enter(chrome, 'date_accident',   patient.accident_date)
+
+    for key, attr in zip(list(css_selectors.keys())[:8], patient):#dictionaries are ordered in python3
+        css_enter(chrome, key, attr)
     
     for service in patient.services:
         css_enter(chrome, 'provider_id_n',  patient.provider_id)
@@ -57,9 +54,6 @@ def enter_data(patient, chrome):
 
     input('...')
     chrome.quit()
-                                                 
-    
-    
 
 
 def main():

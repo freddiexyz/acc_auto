@@ -23,7 +23,6 @@ class PatientEntry:
                                   'service_fee'], service)} for service in claim]
     
     def __iter__(self):
-        #return self
         return (i for i in [self.vendor_id,
                 self.contract_number,
                 self.first_name,
@@ -33,32 +32,18 @@ class PatientEntry:
                 self.accident_number,
                 self.accident_date])
     
-    
     def __next__(self):
         for i in self:
             return i
-        #i = 0
-        #while i < 7:
-            #i += 1
-            #return [self.vendor_id,
-                   #self.contract_number,
-                   #self.first_name,
-                   #self.last_name,
-                   #self.birth_date,
-                   #self.NHI,
-                   #self.accident_number,
-                   #self.accident_date][i - 1]
-    
-    
 
-test_entry = PatientEntry('Shylah', 'Adams', '03/06/2007', '', 'YD57518', '13/09/2017', '12BCJW', ['13/09/2017', 'DY1', '68.68'], ['13/09/2017', 'DX1', '26.37'], ['13/09/2017', 'DX4', '10.41']) 
-    
-"""    
     def __repr__(self):
         return '{}({})'.format(self.__class__, self.__dict__)
     
     
-    def __str__(self):
-        return 'hi
-"""        
-        
+    # def __str__(self):
+    #     return 'hi'    
+    
+
+# test_entry = PatientEntry('Shylah', 'Adams', '03/06/2007', '', 'YD57518', '13/09/2017', '12BCJW', ['13/09/2017', 'DY1', '68.68'], ['13/09/2017', 'DX1', '26.37'], ['13/09/2017', 'DX4', '10.41']) 
+    
+

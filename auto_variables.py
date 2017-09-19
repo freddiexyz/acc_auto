@@ -1,5 +1,4 @@
 css_selectors = {
-    'create_invoice'        : '#tertiary-nav > li:nth-child(1) > a',
     'vendor_id'             : '#vendorId',
     'contract_number'       : '#contractNumber',
     'first_name'            : '#firstName',
@@ -8,6 +7,7 @@ css_selectors = {
     'NHI'                   : '#NHI',
     'claim_number'          : '#claimNumber',
     'date_accident'         : '#DOA',
+    'create_invoice'        : '#tertiary-nav > li:nth-child(1) > a',
     'service_line_n'        : '#header-container-{}', #str.format()
     'service_date_n'        : '#serviceDate_{}', #str.format()
     'provider_id_n'         : '#providerId_{}', #str.format()

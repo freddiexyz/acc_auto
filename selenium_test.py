@@ -37,5 +37,5 @@ def stuff():
     chrome.quit()
 
 if __name__ == '__main__':
-    google()
+    stuff()
     
