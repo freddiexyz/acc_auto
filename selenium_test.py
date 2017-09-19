@@ -1,15 +1,25 @@
 from selenium import webdriver
 from selenium import common
+from selenium.webdriver.common.keys import Keys
 import logging as lg
 
+def google():
+    chrome = webdriver.Chrome('./chromedriver.exe')
+    chrome.maximize_window()
+    chrome.get('https://google.com')
+    search = chrome.find_elements_by_css_selector('#lst-ib')
+    search[0].send_keys('potatoes\n')
+    input('...')
+    chrome.quit()
 
-def main():
+
+def stuff():
     lg.basicConfig(level=lg.INFO,
                    style='{',
                    format='{message}'
                    )
     stuff = 'http://stuff.co.nz'
-    chrome = webdriver.Chrome()
+    chrome = webdriver.Chrome('./chromedriver.exe')
     chrome.maximize_window()
     chrome.get(stuff)
     chrome.find_elements_by_css_selector('#nav > ul > li:nth-child(1) > a')[0].click()
@@ -27,4 +37,5 @@ def main():
     chrome.quit()
 
 if __name__ == '__main__':
-    main()
+    google()
+    
