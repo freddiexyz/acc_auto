@@ -1,6 +1,7 @@
 from acc_auto_class import PatientEntry
 from auto_variables import css_selectors
 from auto_variables import acc_addr
+from mysql_link import get_procs
 from selenium import webdriver
 from selenium import common
 import logging as lg
@@ -57,12 +58,13 @@ def enter_data(patient, chrome):
 
 
 def main():
-    lg.basicConfig(level    =lg.INFO,
-                   style    ='{',
-                   format   ='{message}'
-                   )
-    patient = make_test_patient()
-    enter_data(patient, chrome_setup())
+#     lg.basicConfig(level    =lg.INFO,
+#                    style    ='{',
+#                    format   ='{message}'
+#                    )
+#     # patient = make_test_patient()
+#     # enter_data(patient, chrome_setup())
+    pass
 
 
 if __name__ == '__main__':
