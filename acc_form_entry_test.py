@@ -7,10 +7,12 @@ from mysql_link import get_procs
 auto_gen_warning = "This form has been filled out automatically and is still in testing!\nDO NOT SUBMIT"
 
 def css_click(selector):
-    return ('{}'.format(selector))
+    return ('{} <click>'.format(selector))
     
 
-def css_enter(selector, entry):
+def css_enter(selector, entry, *formatting):
+    if formatting:
+        return ('{} {} {}'.format(selector, entry, *formatting))
     return ('{} {}'.format(selector, entry))
 
 
@@ -23,7 +25,6 @@ def enter_data2(patient):
    
     for service in patient.services:
         out.append(css_enter('provider_id_n',  patient.provider_id))
-        
         out.append(css_enter('service_date_n', service['service_date']))#, patient.services.index(service)))
         out.append(css_enter('service_code_n', service['service_code']))#, patient.services.index(service)))
         out.append(css_enter('service_fee_n' , service['service_fee' ]))#, patient.services.index(service)))
@@ -39,31 +40,34 @@ def enter_data2(patient):
 
 class TesterClass(unittest.TestCase):
     def setUp(self):
-        self.test_patient1 = PatientEntry('Shylah',  'Adams', '03/06/2007', 'ABC1235', 'YD57518', '13/09/2017', '12BCJW', ['13/09/2017', 'DY1', '68.68'], ['13/09/2017', 'DX1', '26.37'], ['13/09/2017', 'DX4', '10.41'])
-        self.test_patient2 = PatientEntry('Freddie', 'Lee',   '28/04/1993', 'ABC1235', 'YD11111', '04/07/2011', '19BAGH', ['05/07/2011', 'DY1', '68.68'], ['05/07/2011', 'DX1', '26.37'])
-        self.test_patient3 = PatientEntry('Sam',     'Lee',   '29/08/1995', 'ABC1235', 'YD22222', '04/07/2011', '19BAGH', ['05/07/2011', 'DY1', '68.68'])   
+        # self.test_patient1 = PatientEntry('Shylah',  'Adams', '03/06/2007', 'ABC1235', 'YD57518', '13/09/2017', '12BCJW', ['13/09/2017', 'DY1', '68.68'], ['13/09/2017', 'DX1', '26.37'], ['13/09/2017', 'DX4', '10.41'])
+        # self.test_patient2 = PatientEntry('Freddie', 'Lee',   '28/04/1993', 'ABC1235', 'YD11111', '04/07/2011', '19BAGH', ['05/07/2011', 'DY1', '68.68'], ['05/07/2011', 'DX1', '26.37'])
+        # self.test_patient3 = PatientEntry('Sam',     'Lee',   '29/08/1995', 'ABC1235', 'YD22222', '04/07/2011', '19BAGH', ['05/07/2011', 'DY1', '68.68'])   
         
 
         gen1 = get_procs(1)
-        gen2 = get_procs(2)
-        gen3 = get_procs(3)
+        # gen2 = get_procs(2)
+        # gen3 = get_procs(3)
 
         self.test_gen1 = PatientEntry(*gen1[0],*gen1[1])
-        self.test_gen2 = PatientEntry(*gen2[0],*gen2[1])
-        self.test_gen3 = PatientEntry(*gen3[0],*gen3[1])
+        self.test_gen2 = PatientEntry.fromMySQL(gen1)
+        # self.test_gen3 = PatientEntry(*gen3[0],*gen3[1])
 
     def test_gen_1(self):
-        self.assertEqual(enter_data2(self.test_patient1), enter_data2(self.test_gen1))
-    def test_gen_2(self):
-        self.assertEqual(enter_data2(self.test_patient2), enter_data2(self.test_gen2))
-    def test_gen_3(self):
-        self.assertEqual(enter_data2(self.test_patient3), enter_data2(self.test_gen3))
+        self.assertEqual(enter_data2(self.test_gen2), enter_data2(self.test_gen1))
+    # def test_gen_2(self):
+    #     self.assertEqual(enter_data2(self.test_patient2), enter_data2(self.test_gen2))
+    # def test_gen_3(self):
+    #     self.assertEqual(enter_data2(self.test_patient3), enter_data2(self.test_gen3))
 
 
 
 if __name__ == '__main__':
     unittest.main(exit=False, verbosity=2)
-
+     # gen1 = get_procs(1)
+     # test_gen1 = PatientEntry(*gen1[0],*gen1[1])
+     # test_gen2 = PatientEntry.fromMySQL(gen1)
+     # print(*enter_data2(test_gen1), sep='\n')
 
 
 

@@ -45,6 +45,7 @@ if __name__ == '__main__':
 # od.execute("update patient set provid = '12BCJW' where patnum = 1")
 # opendental.commit()
 # opendental.close()
+
 # query_patient = f"""SELECT p.firstname, p.lastname, p.dob, p.ssn, ins.inssubnum, ins.doa
 # FROM patient p
 # INNER JOIN insuranceprovider ins on p.patnum = ins.patnum

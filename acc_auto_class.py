@@ -21,7 +21,11 @@ class PatientEntry:
                           in zip(['service_date',
                                   'service_code',
                                   'service_fee'], service)} for service in claim]
-    
+
+    @classmethod
+    def fromMySQL(cls, patient):
+        return cls(*patient[0],*patient[1])
+
     def __iter__(self):
         return (i for i in [self.vendor_id,
                 self.contract_number,
