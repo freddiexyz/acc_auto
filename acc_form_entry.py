@@ -59,9 +59,7 @@ class FormEntry():
 
 
 def main():
-    lg.basicConfig(level    =lg.INFO,
-                   style    ='{',
-                   format   ='{message}')
+    #lg.basicConfig(level=lg.INFO,style='{',format='{message}')
     sql_getter = SQLgetter()
     patient = sql_getter.get_procs(32308)
     sql_getter.close_connection
