@@ -10,10 +10,12 @@ class PatientEntry:
                  NHI, accidentNumber, dateAccident, provId, *claim):
         self.first_name = firstName
         self.last_name = lastName
-        self.birth_date = dateBirth
+        dob_split = dateBirth.split('-')
+        self.birth_date = '{}/{}/{}'.format(dob_split[2],dob_split[1],dob_split[0])
         self.NHI = NHI
         self.accident_number = accidentNumber
-        self.accident_date = dateAccident
+        doa_split = dateAccident.split('-')
+        self.accident_date = '{}/{}/{}'.format(doa_split[2],doa_split[1],doa_split[0])
         self.provider_id = provId
         
         self.services = [{key : value
