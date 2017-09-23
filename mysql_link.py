@@ -1,35 +1,50 @@
 import pymysql as sql
 
+query_patient = """
+select p.FName, p.LName, p.BirthDate, p.SSN, ins.subscriberid, c.AccidentDate, c.ProvTreat
+from claim c inner join patient p on c.PatNum = p.PatNum inner join inssub ins on c.inssubnum = ins.inssubnum 
+where c.ClaimNum = {}"""
+
+query_procs = """
+select pl.ProcDate, pc.ProcCode, pl.ProcFee
+from claim c inner join claimproc cp on c.ClaimNum = cp.ClaimNum inner join procedurelog pl on cp.ProcNum = pl.ProcNum inner join procedurecode pc on pl.CodeNum = pc.CodeNum
+where c.ClaimNum = {}
+"""
+
 class SQLgetter:
-	def __init__(self):
-		self.opendental = sql.connect("db4free.net", "freddiexyz","hunter2", "acc_auto_test")
-		self.od = self.opendental.cursor()
+    def __init__(self):
+        conv=sql.converters.conversions.copy()
+        for i in range(246):
+                conv[i]=str
+        self.opendental = sql.connect("bsse12", "root","", "opendental", conv=conv)
+        self.od = self.opendental.cursor()
 
-	def close_connection(self):
-		self.opendental.close()
+    def close_connection(self):
+        self.opendental.close()
 
-	def get_procs(self, patnum):
-		# self.opendental = sql.connect("db4free.net", "freddiexyz","hunter2", "acc_auto_test")
+    def get_procs(self, claimnum):
+        self.od.execute(query_patient.format(claimnum))
+        patient = self.od.fetchone()
 
-		# self.od = opendental.cursor()
+        self.od.execute(query_procs.format(claimnum))
+        procs = self.od.fetchall()
 
-		query_patient_test = f"""SELECT fname, lname, dob, nhi, accidentnumner, accidentdate, provid FROM patient WHERE patnum = {patnum}"""
-		query_procs_test = f"""SELECT serdate, sercode, serfee FROM proc WHERE patnum = {patnum}"""
-
-		self.od.execute(query_patient_test)
-		patient = self.od.fetchone()
-
-		self.od.execute(query_procs_test)
-		procs = self.od.fetchall()
-
-		# opendental.close()
-
-		return patient, procs
+        return patient, procs
 
 
 if __name__ == '__main__':
-	for patnum in range(1,4):
-		print(*get_procs(patnum), sep='\n')
+    opendental = SQLgetter()
+    print(*opendental.get_procs(32308), sep='\n')
+    opendental.close_connection()
+
+
+
+
+#self.opendental = sql.connect("db4free.net", "freddiexyz","hunter2", "acc_auto_test")
+#opendental.close()
+#query_patient_test = f"""SELECT fname, lname, dob, nhi, accidentnumner, accidentdate, provid FROM patient WHERE patnum = {patnum}"""
+#query_procs_test = f"""SELECT serdate, sercode, serfee FROM proc WHERE patnum = {patnum}"""
+
 
 
 

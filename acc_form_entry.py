@@ -1,21 +1,22 @@
 from auto_variables import css_selectors, acc_addr
 from acc_auto_class import PatientEntry
 from selenium import webdriver, common
-from mysql_link import get_procs
+from mysql_link import SQLgetter, query_patient, query_procs
 import logging as lg
 
 auto_gen_warning = "This form has been filled out automatically and is still in testing!\nDO NOT SUBMIT"
 
 class FormEntry():
     def __init__(self, *patients):
-        self.chrome = chrome_setup()
+        self.providers = {'1' : '19BAGH', '2' : '12BCJW', '5' : '25CANA'}
+        self.chrome = self.chrome_setup()
         for patient in patients:
             self.enter_data(PatientEntry.fromMySQL(patient))
             #handle completed entry or error
-        self.chrome.quit()
+        #self.chrome.quit()
 
-    @classmethod
-    def chrome_setup():
+    
+    def chrome_setup(self):
         """Initialises chrome webdriver api --> webdriver object"""
         chrome = webdriver.Chrome('./chromedriver.exe')
         chrome.maximize_window()
@@ -42,8 +43,10 @@ class FormEntry():
             self.css_enter(key, attr)
         
         for service in patient.services:
-            self.css_enter('provider_id_n',  patient.provider_id)
-            self.css_enter('service_date_n', service['service_date'], patient.services.index(service))
+            self.css_enter('provider_id_n',  self.providers[patient.provider_id], patient.services.index(service))
+            #self.css_enter('service_date_n', service['service_date'], patient.services.index(service))
+            dos_split = service['service_date'].split('-')
+            self.css_enter('service_date_n', '{}/{}/{}'.format(dos_split[2], dos_split[1],dos_split[0]), patient.services.index(service))
             self.css_enter('service_code_n', service['service_code'], patient.services.index(service))
             self.css_enter('service_fee_n' , service['service_fee' ], patient.services.index(service))
             
@@ -59,8 +62,11 @@ def main():
     lg.basicConfig(level    =lg.INFO,
                    style    ='{',
                    format   ='{message}')
-    #FormEntry(get_procs()) <-- make this work
-    pass
+    sql_getter = SQLgetter()
+    patient = sql_getter.get_procs(32308)
+    sql_getter.close_connection
+    FormEntry(patient)
+
 
 if __name__ == '__main__':
     main()
