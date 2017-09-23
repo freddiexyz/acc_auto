@@ -11,6 +11,14 @@ from claim c inner join claimproc cp on c.ClaimNum = cp.ClaimNum inner join proc
 where c.ClaimNum = {}
 """
 
+query_available = """
+SELECT c.ClaimNum, concat(p.FName, ' ', p.LName)
+FROM claim c
+INNER JOIN patient p on c.Patnum = p.patnum
+WHERE ClaimStatus='W'
+AND PlanNum=68
+"""
+
 class SQLgetter:
     def __init__(self):
         conv=sql.converters.conversions.copy()
@@ -21,6 +29,14 @@ class SQLgetter:
 
     def close_connection(self):
         self.opendental.close()
+
+    def get_available(self):
+        self.od.execute(query_available)
+        available_claims = self.od.fetchall()
+        for claim in available_claims:
+            print(f'[{available_claims.index(claim) + 1:02d}] - {claim[1]}')
+        choice = int(input('>'))
+        return available_claims[choice-1][0]
 
     def get_procs(self, claimnum):
         self.od.execute(query_patient.format(claimnum))
