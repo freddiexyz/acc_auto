@@ -35,8 +35,7 @@ class SQLgetter:
         available_claims = self.od.fetchall()
         for claim in available_claims:
             print(f'[{available_claims.index(claim) + 1:02d}] - {claim[1]}')
-        choice = int(input('>'))
-        return available_claims[choice-1][0]
+        return available_claims[int(input('>'))-1][0]
 
     def get_procs(self, claimnum):
         self.od.execute(query_patient.format(claimnum))
