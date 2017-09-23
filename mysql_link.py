@@ -1,22 +1,30 @@
 import pymysql as sql
 
-def get_procs(patnum):
-	opendental = sql.connect("db4free.net", "freddiexyz","hunter2", "acc_auto_test")
+class SQLgetter:
+	def __init__(self):
+		self.opendental = sql.connect("db4free.net", "freddiexyz","hunter2", "acc_auto_test")
+		self.od = self.opendental.cursor()
 
-	od = opendental.cursor()
+	def close_connection(self):
+		self.opendental.close()
 
-	query_patient_test = f"""SELECT fname, lname, dob, nhi, accidentnumner, accidentdate, provid FROM patient WHERE patnum = {patnum}"""
-	query_procs_test = f"""SELECT serdate, sercode, serfee FROM proc WHERE patnum = {patnum}"""
+	def get_procs(self, patnum):
+		# self.opendental = sql.connect("db4free.net", "freddiexyz","hunter2", "acc_auto_test")
 
-	od.execute(query_patient_test)
-	patient = od.fetchone()
+		# self.od = opendental.cursor()
 
-	od.execute(query_procs_test)
-	procs = od.fetchall()
+		query_patient_test = f"""SELECT fname, lname, dob, nhi, accidentnumner, accidentdate, provid FROM patient WHERE patnum = {patnum}"""
+		query_procs_test = f"""SELECT serdate, sercode, serfee FROM proc WHERE patnum = {patnum}"""
 
-	opendental.close()
+		self.od.execute(query_patient_test)
+		patient = self.od.fetchone()
 
-	return patient, procs
+		self.od.execute(query_procs_test)
+		procs = self.od.fetchall()
+
+		# opendental.close()
+
+		return patient, procs
 
 
 if __name__ == '__main__':

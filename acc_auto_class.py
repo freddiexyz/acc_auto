@@ -41,7 +41,7 @@ class PatientEntry:
             return i
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__, self.__dict__)
+        return '{}'.format(self.__dict__)
     
     
     # def __str__(self):
