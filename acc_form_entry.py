@@ -1,29 +1,28 @@
 from auto_variables import css_selectors, acc_addr
 from acc_auto_class import PatientEntry
 from selenium import webdriver, common
-from mysql_link import SQLgetter, query_patient, query_procs
-import logging as lg
 
-auto_gen_warning = "This form has been filled out automatically and is still in testing!\nDO NOT SUBMIT"
+auto_gen_warning = "This form has been filled out automatically and is still in testing!\nPlease check info before submitting"
 
 class FormEntry():
-    def __init__(self, *patients):
-        self.providers = {'1' : '19BAGH', '2' : '12BCJW', '5' : '25CANA'}
+    providers = {'1' : '19BAGH', '2' : '12BCJW', '5' : '25CANA'}
+    def __init__(self, patient):
         self.chrome = self.chrome_setup()
-        for patient in patients:
-            self.enter_data(PatientEntry.fromMySQL(patient))
-            #handle completed entry or error
-        #self.chrome.quit()
+        self.enter_data(PatientEntry.fromMySQL(patient))
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.chrome
     
-    def chrome_setup(self):
+    @staticmethod
+    def chrome_setup():
         """Initialises chrome webdriver api --> webdriver object"""
         chrome = webdriver.Chrome('./chromedriver.exe')
         chrome.maximize_window()
         chrome.get(acc_addr)
-
         return chrome
-
 
     def css_click(self, selector, *formatting):
         """Wrapper that finds an element by css selector and clicks on it, with optional formatting"""
@@ -56,15 +55,3 @@ class FormEntry():
                 self.css_click('hide_tab_n', patient.services.index(service))
         
         self.css_enter('additional_comments', auto_gen_warning)
-
-
-def main():
-    #lg.basicConfig(level=lg.INFO,style='{',format='{message}')
-    sql_getter = SQLgetter()
-    patient = sql_getter.get_procs(32308)
-    sql_getter.close_connection
-    FormEntry(patient)
-
-
-if __name__ == '__main__':
-    main()
