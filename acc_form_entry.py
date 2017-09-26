@@ -10,7 +10,13 @@ class FormEntry():
     providers = {'1' : '19BAGH', '2' : '12BCJW', '5' : '25CANA'}
     def __init__(self, patient):
         self.chrome = self.chrome_setup()
-        self.enter_data(PatientEntry.fromMySQL(patient))
+        #self.enter_data(PatientEntry.fromMySQL(patient))
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self,*exc):
+        self.chrome.quit()
 
     
     def chrome_setup(self):
@@ -18,6 +24,7 @@ class FormEntry():
         chrome = webdriver.Chrome('./chromedriver.exe')
         chrome.maximize_window()
         chrome.get(acc_addr)
+        self.css_click('create_invoice')
 
         return chrome
 
@@ -34,8 +41,8 @@ class FormEntry():
 
     def enter_data(self, patient):
         """Fills in fields of claim form with attributes of instance of PatientEntry class"""    
-        self.css_click('create_invoice')
-
+        patient = PatientEntry.fromMySQL(patient)
+        
         for key, attr in zip(list(css_selectors.keys())[:8], patient):
             self.css_enter(key, attr)
         
@@ -56,4 +63,15 @@ class FormEntry():
             else:
                 self.css_click('hide_tab_n', index)
         
-        self.css_enter('additional_comments', auto_gen_warning)
+        invoice_number = self.chrome.find_element_by_css_selector['invoice_number'].get_attribute('text')
+        
+        input('Continue?')
+        
+        self.css_click('submit_button')
+        self.css_click('download_pdf_button')
+        sleep(1)
+        self.css_click('create_another_button')
+        
+        return invoice_number
+        
+        

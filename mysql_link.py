@@ -24,10 +24,10 @@ class SQLgetter:
         self.claimnum = available_claims[int(input('>'))-1][0]
         return self.claimnum
 
-    def get_procs(self, claimnum):
-        self.curs.execute(query_patient.format(claimnum))
+    def get_procs(self):
+        self.curs.execute(query_patient.format(self.claimnum))
         patient = self.curs.fetchone()
-        self.curs.execute(query_procs.format(claimnum))
+        self.curs.execute(query_procs.format(self.claimnum))
         procs = self.curs.fetchall()
         return patient, procs
 
