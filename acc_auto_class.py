@@ -16,6 +16,8 @@ class PatientEntry:
         self.accident_number = accidentNumber
         doa_split = dateAccident.split('-')
         self.accident_date = '{}/{}/{}'.format(doa_split[2],doa_split[1],doa_split[0])
+        if self.accident_date == '01/01/0001':
+            self.accident_date = ''
         self.provider_id = provId
         
         self.services = [{key : value
