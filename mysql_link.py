@@ -24,15 +24,15 @@ class SQLgetter:
         self.claimnum = available_claims[int(input('>'))-1][0]
         return self.claimnum
 
-    def get_procs(self, claimnum):
-        self.curs.execute(query_patient, {'claimnum' : claimnum})
+    def get_procs(self):
+        self.curs.execute(query_patient.format(self.claimnum))
         patient = self.curs.fetchone()
-        self.curs.execute(query_procs, {'claimnum' : claimnum})
+        self.curs.execute(query_procs.format(self.claimnum))
         procs = self.curs.fetchall()
         return patient, procs
 
     def submit_claim(self, invoice_reference):
-        self.curs.execute(set_claim_as_sent, {'claimnum' : self.claimnum, 'invoice_reference' : invoice_reference})
+        self.curs.execute(set_claim_as_sent.format(invoice_reference, self.claimnum))
 
     def main(self):
         return self.get_procs(self.get_available())
