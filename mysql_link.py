@@ -1,83 +1,75 @@
-import pymysql as sql
-
-query_patient = """
-select p.FName, p.LName, p.BirthDate, p.SSN, ins.subscriberid, c.AccidentDate, c.ProvTreat
-from claim c inner join patient p on c.PatNum = p.PatNum inner join inssub ins on c.inssubnum = ins.inssubnum 
-where c.ClaimNum = {}"""
-
-query_procs = """
-select pl.ProcDate, pc.ProcCode, pl.ProcFee
-from claim c inner join claimproc cp on c.ClaimNum = cp.ClaimNum inner join procedurelog pl on cp.ProcNum = pl.ProcNum inner join procedurecode pc on pl.CodeNum = pc.CodeNum
-where c.ClaimNum = {}
-"""
-
-query_available = """
-SELECT c.ClaimNum, concat(p.FName, ' ', p.LName)
-FROM claim c
-INNER JOIN patient p on c.Patnum = p.patnum
-WHERE ClaimStatus='W'
-AND PlanNum=68
-"""
+from auto_variables import query_patient, query_procs, query_available, set_claim_as_sent
+import pymysql
 
 class SQLgetter:
     def __init__(self):
-        conv=sql.converters.conversions.copy()
+        conv=pymysql.converters.conversions.copy()
         for i in range(246):
                 conv[i]=str
-        self.opendental = sql.connect("bsse12", "root","", "opendental", conv=conv)
-        self.od = self.opendental.cursor()
+        self.conn = pymysql.connect("bsse12", "root","", "opendental", conv=conv)
+        self.curs = self.conn.cursor()
 
-    def close_connection(self):
-        self.opendental.close()
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.conn.commit()
+        self.conn.close()
 
     def get_available(self):
-        self.od.execute(query_available)
-        available_claims = self.od.fetchall()
+        self.curs.execute(query_available)
+        available_claims = self.curs.fetchall()
         for claim in available_claims:
             print(f'[{available_claims.index(claim) + 1:02d}] - {claim[1]}')
-        return available_claims[int(input('>'))-1][0]
+        self.claimnum = available_claims[int(input('>'))-1][0]
+        return self.claimnum
 
-    def get_procs(self, claimnum):
-        self.od.execute(query_patient.format(claimnum))
-        patient = self.od.fetchone()
-
-        self.od.execute(query_procs.format(claimnum))
-        procs = self.od.fetchall()
-
+    def get_procs(self):
+        self.curs.execute(query_patient.format(self.claimnum))
+        patient = self.curs.fetchone()
+        self.curs.execute(query_procs.format(self.claimnum))
+        procs = self.curs.fetchall()
         return patient, procs
 
+    def submit_claim(self, invoice_reference):
+        self.curs.execute(set_claim_as_sent.format(invoice_reference, self.claimnum))
 
-if __name__ == '__main__':
-    opendental = SQLgetter()
-    print(*opendental.get_procs(32308), sep='\n')
-    opendental.close_connection()
-
-
+    def main(self):
+        return self.get_procs(self.get_available())
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# if __name__ == '__main__':
+#     opendental = SQLgetter()
+#     print(*opendental.get_procs(32308), sep='\n')
+#     opendental.close_connection()
 #self.opendental = sql.connect("db4free.net", "freddiexyz","hunter2", "acc_auto_test")
 #opendental.close()
 #query_patient_test = f"""SELECT fname, lname, dob, nhi, accidentnumner, accidentdate, provid FROM patient WHERE patnum = {patnum}"""
 #query_procs_test = f"""SELECT serdate, sercode, serfee FROM proc WHERE patnum = {patnum}"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # opendental = sql.connect("db4free.net", "freddiexyz","hunter2", "acc_auto_test")
 # od = opendental.cursor()
 # od.execute("update patient set provid = '12BCJW' where patnum = 1")
