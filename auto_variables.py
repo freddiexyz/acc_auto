@@ -18,7 +18,13 @@ css_selectors = {
     'add_service_button'    : '#addserviceBtn',
     'hide_tab_n'            : '#header-container-{} > span.service-header-chevron.glyphicon.glyphicon-chevron-up', #str.fromat()
     'additional_comments'   : '#additionalComments',
-    'submit_button'         : '#submit-button'
+    'submit_button'         : '#submit-button',
+    'invoice_number'        : '#invoiceNumber',
+    'based_on_n'            : '#serviceCodes_{}-feeBasedOn_0', #str.format()
+    'units_n'               : '#serviceCodes_{}-feeBasedOn_0 > option:nth-child(4)',
+    'units_entry_n'         : '#serviceCodes_{}-units_0', #str.format()
+    'create_another_button' : '#create-invoice-btn',
+    'download_pdf_button'   : '#pdf-btn'
     }
 
 acc_addr = 'https://health.myacc.co.nz/portal/secure/ebusiness/invoicing'
@@ -26,12 +32,12 @@ acc_addr = 'https://health.myacc.co.nz/portal/secure/ebusiness/invoicing'
 query_patient = """
 select p.FName, p.LName, p.BirthDate, p.SSN, ins.subscriberid, c.AccidentDate, c.ProvTreat
 from claim c inner join patient p on c.PatNum = p.PatNum inner join inssub ins on c.inssubnum = ins.inssubnum 
-where c.ClaimNum = :claimnum"""
+where c.ClaimNum = {}"""
 
 query_procs = """
 select pl.ProcDate, pc.ProcCode, pl.ProcFee
 from claim c inner join claimproc cp on c.ClaimNum = cp.ClaimNum inner join procedurelog pl on cp.ProcNum = pl.ProcNum inner join procedurecode pc on pl.CodeNum = pc.CodeNum
-where c.ClaimNum = :claimnum
+where c.ClaimNum = {}
 """
 
 query_available = """
@@ -44,6 +50,6 @@ AND PlanNum=68
 
 set_claim_as_sent = """
 UPDATE claim
-SET ClaimStatus='S', ClaimNote = :invoice_reference
-WHERE ClaimNum = :claimnum
+SET ClaimStatus='S', ClaimNote = '{}'
+WHERE ClaimNum = {}
 """
