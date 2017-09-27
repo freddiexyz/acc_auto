@@ -46,12 +46,3 @@ class PatientEntry:
 
     def __repr__(self):
         return '{}'.format(self.__dict__)
-    
-    
-    # def __str__(self):
-    #     return 'hi'    
-    
-
-# test_entry = PatientEntry('Shylah', 'Adams', '03/06/2007', '', 'YD57518', '13/09/2017', '12BCJW', ['13/09/2017', 'DY1', '68.68'], ['13/09/2017', 'DX1', '26.37'], ['13/09/2017', 'DX4', '10.41']) 
-    
-
