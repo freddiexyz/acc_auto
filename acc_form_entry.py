@@ -1,7 +1,6 @@
 from auto_variables import css_selectors, acc_addr
 from acc_auto_class import PatientEntry
 from selenium import webdriver, common
-from mysql_link import SQLgetter, query_patient, query_procs
 from time import sleep
 
 auto_gen_warning = "Please check info before submitting"
